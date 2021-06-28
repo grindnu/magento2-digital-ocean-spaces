@@ -1,0 +1,5 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Magento\AwsS3\Driver\AwsS3Factory"
+        type="Grindnu\DigitalOceanSpaces\Driver\DigitalOceanS3Factory" />
+</config>
