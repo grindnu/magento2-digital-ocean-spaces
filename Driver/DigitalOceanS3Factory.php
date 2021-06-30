@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Grindnu\DigitalOceanSpaces\Driver;
 
@@ -100,9 +100,9 @@ class DigitalOceanS3Factory implements DriverFactoryInterface
             [
                 'adapter' => $this->objectManager->create(CachedAdapter::class, [
                     'adapter' => $adapter,
-                    'cache' => $this->cacheFactory->create($cacheAdapter, $cacheConfig)
+                    'cache' => $this->cacheFactory->create($cacheAdapter, $cacheConfig),
                 ]),
-                'objectUrl' => $client->getObjectUrl($adapter->getBucket(), $adapter->applyPathPrefix('.'))
+                'objectUrl' => $client->getObjectUrl($adapter->getBucket(), $adapter->applyPathPrefix('.')),
             ]
         );
     }
