@@ -7,6 +7,7 @@ namespace Grindnu\DigitalOceanSpaces\Driver;
 use Aws\S3\S3Client;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use League\Flysystem\Cached\CachedAdapter;
+use Magento\AwsS3\Driver\AwsS3;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\RemoteStorage\Driver\Cache\CacheFactory;
