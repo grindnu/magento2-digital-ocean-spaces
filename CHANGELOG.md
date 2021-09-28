@@ -19,11 +19,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 **Removed**
 
 
+## [2.0.0] - 2021-09-28
+
+**Fixed**
+
+* Adjust implementation to work with Magento 2.4.3.
+
+
 ## [1.0.1] - 2021-07-06
 
 **Fixed**
 
-- Fixed missing dependency.
+* Fixed missing dependency.
 
 
 ## [1.0.0] - 2021-06-28
