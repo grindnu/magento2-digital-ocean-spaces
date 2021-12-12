@@ -53,11 +53,14 @@ class DigitalOceanS3Factory implements DriverFactoryInterface
     /**
      * @inheritDoc
      */
-    public function create(): RemoteDriverInterface
+    public function create($config = []): RemoteDriverInterface
     {
         try {
             return $this->createConfigured(
-                $this->config->getConfig(),
+                array_merge(
+                    $this->config->getConfig(),
+                    $config
+                ),
                 $this->config->getPrefix(),
                 $this->config->getCacheAdapter(),
                 $this->config->getCacheConfig()

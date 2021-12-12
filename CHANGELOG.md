@@ -19,11 +19,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 **Removed**
 
 
+## [1.0.2] - 2021-12-12
+
+**Added**
+
+* Allow runtime configuration override, for example, to explicitely set the `bucket`.
+
+
 ## [1.0.1] - 2021-07-06
 
 **Fixed**
 
-- Fixed missing dependency.
+* Fixed missing dependency.
 
 
 ## [1.0.0] - 2021-06-28
