@@ -19,6 +19,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 **Removed**
 
 
+## [1.1.0] - 2022-05-18
+
+**Added**
+
+* Moved to private package manager.
+
+
 ## [1.0.2] - 2021-12-12
 
 **Added**
