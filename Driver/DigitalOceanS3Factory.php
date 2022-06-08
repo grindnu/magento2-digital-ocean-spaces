@@ -94,7 +94,7 @@ class DigitalOceanS3Factory implements DriverFactoryInterface
         }
 
         // Override endpoint to allow DigitalOcean.
-        $config['endpoint'] = sprintf(self::DIGITAL_OCEAN_SPACES_ENDPOINT, $config['region']);
+        $config['endpoint'] = sprintf(static::DIGITAL_OCEAN_SPACES_ENDPOINT, $config['region']);
 
         $client = new S3Client($config);
         $adapter = new AwsS3Adapter($client, $config['bucket'], $prefix);
