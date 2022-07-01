@@ -1,37 +1,23 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Grindnu\DigitalOceanSpaces\Driver;
 
-use Aws\S3\S3Client;
-use League\Flysystem\AwsS3v3\AwsS3Adapter;
-use League\Flysystem\Cached\CachedAdapter;
-use Magento\AwsS3\Driver\AwsS3;
+use Magento\AwsS3\Driver\AwsS3Factory;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\ObjectManagerInterface;
-use Magento\RemoteStorage\Driver\Cache\CacheFactory;
+use Magento\RemoteStorage\Driver\Adapter\Cache\CacheInterfaceFactory;
+use Magento\RemoteStorage\Driver\Adapter\CachedAdapterInterfaceFactory;
+use Magento\RemoteStorage\Driver\Adapter\MetadataProviderInterfaceFactory;
 use Magento\RemoteStorage\Driver\DriverException;
-use Magento\RemoteStorage\Driver\DriverFactoryInterface;
 use Magento\RemoteStorage\Driver\RemoteDriverInterface;
 use Magento\RemoteStorage\Model\Config;
 
 /**
- * Creates a pre-configured instance of DigitalOcean S3 driver.
+ * Creates a pre-configured instance of AWS S3 driver.
  */
-class DigitalOceanS3Factory implements DriverFactoryInterface
+class DigitalOceanS3Factory extends AwsS3Factory
 {
     private const DIGITAL_OCEAN_SPACES_ENDPOINT = 'https://%s.digitaloceanspaces.com/';
-
-    /**
-     * @var ObjectManagerInterface
-     */
-    private $objectManager;
-
-    /**
-     * @var CacheFactory
-     */
-    private $cacheFactory;
 
     /**
      * @var Config
@@ -40,14 +26,30 @@ class DigitalOceanS3Factory implements DriverFactoryInterface
 
     /**
      * @param ObjectManagerInterface $objectManager
-     * @param CacheFactory $cacheFactory
      * @param Config $config
+     * @param MetadataProviderInterfaceFactory $metadataProviderFactory
+     * @param CacheInterfaceFactory $cacheInterfaceFactory
+     * @param CachedAdapterInterfaceFactory $cachedAdapterInterfaceFactory
+     * @param string|null $cachePrefix
      */
-    public function __construct(ObjectManagerInterface $objectManager, CacheFactory $cacheFactory, Config $config)
-    {
-        $this->objectManager = $objectManager;
-        $this->cacheFactory = $cacheFactory;
+    public function __construct(
+        ObjectManagerInterface $objectManager,
+        Config $config,
+        MetadataProviderInterfaceFactory $metadataProviderFactory,
+        CacheInterfaceFactory $cacheInterfaceFactory,
+        CachedAdapterInterfaceFactory $cachedAdapterInterfaceFactory,
+        string $cachePrefix = null
+    ) {
         $this->config = $config;
+
+        parent::__construct(
+            $objectManager,
+            $config,
+            $metadataProviderFactory,
+            $cacheInterfaceFactory,
+            $cachedAdapterInterfaceFactory,
+            $cachePrefix
+        );
     }
 
     /**
@@ -56,58 +58,16 @@ class DigitalOceanS3Factory implements DriverFactoryInterface
     public function create($config = []): RemoteDriverInterface
     {
         try {
+            // Override endpoint to allow DigitalOcean.
+            $config = $this->config->getConfig();
+            $config['endpoint'] = sprintf(self::DIGITAL_OCEAN_SPACES_ENDPOINT, $config['region']);
+
             return $this->createConfigured(
-                array_merge(
-                    $this->config->getConfig(),
-                    $config
-                ),
-                $this->config->getPrefix(),
-                $this->config->getCacheAdapter(),
-                $this->config->getCacheConfig()
+                $config,
+                $this->config->getPrefix()
             );
         } catch (LocalizedException $exception) {
             throw new DriverException(__($exception->getMessage()), $exception);
         }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function createConfigured(
-        array $config,
-        string $prefix,
-        string $cacheAdapter,
-        array $cacheConfig
-    ): RemoteDriverInterface {
-        $config['version'] = 'latest';
-
-        if (empty($config['credentials']['key']) || empty($config['credentials']['secret'])) {
-            unset($config['credentials']);
-        }
-
-        if (empty($config['bucket']) || empty($config['region'])) {
-            throw new DriverException(__('Bucket and region are required values'));
-        }
-
-        if (!empty($config['http_handler'])) {
-            $config['http_handler'] = $this->objectManager->create($config['http_handler'])($config);
-        }
-
-        // Override endpoint to allow DigitalOcean.
-        $config['endpoint'] = sprintf(static::DIGITAL_OCEAN_SPACES_ENDPOINT, $config['region']);
-
-        $client = new S3Client($config);
-        $adapter = new AwsS3Adapter($client, $config['bucket'], $prefix);
-
-        return $this->objectManager->create(
-            AwsS3::class,
-            [
-                'adapter' => $this->objectManager->create(CachedAdapter::class, [
-                    'adapter' => $adapter,
-                    'cache' => $this->cacheFactory->create($cacheAdapter, $cacheConfig),
-                ]),
-                'objectUrl' => $client->getObjectUrl($adapter->getBucket(), $adapter->applyPathPrefix('.')),
-            ]
-        );
     }
 }
