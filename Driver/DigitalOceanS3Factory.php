@@ -55,7 +55,7 @@ class DigitalOceanS3Factory extends AwsS3Factory
     /**
      * @inheritDoc
      */
-    public function create(): RemoteDriverInterface
+    public function create($config = []): RemoteDriverInterface
     {
         try {
             // Override endpoint to allow DigitalOcean.

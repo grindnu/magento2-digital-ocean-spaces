@@ -19,11 +19,32 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 **Removed**
 
 
-## [2.0.0] - 2021-09-28
+## [2.0.0] - 2022-07-01
 
 **Fixed**
 
 * Adjust implementation to work with Magento 2.4.3.
+
+
+## [1.1.1] - 2022-06-14
+
+**Changed**
+
+* Move references from `self::` to `static::`
+
+
+## [1.1.0] - 2022-05-18
+
+**Added**
+
+* Moved to private package manager.
+
+
+## [1.0.2] - 2021-12-12
+
+**Added**
+
+* Allow runtime configuration override, for example, to explicitely set the `bucket`.
 
 
 ## [1.0.1] - 2021-07-06
